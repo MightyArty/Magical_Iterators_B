@@ -7,12 +7,17 @@ MagicalContainer::MagicalContainer() {}
 
 void MagicalContainer::addElement(int element)
 {
-    this->elements.push_back(element);
+    auto iter = lower_bound(this->elements.begin(), this->elements.end(), element);
+    this->elements.insert(iter, element);
 }
 
 void MagicalContainer::removeElement(int element)
 {
-    return;
+    auto iter = find(this->elements.begin(), this->elements.end(), element);
+    if (iter != this->elements.end())
+        this->elements.erase(iter);
+    else
+        throw runtime_error("The given element isn't located in the container!");
 }
 
 int MagicalContainer::size()
@@ -20,59 +25,71 @@ int MagicalContainer::size()
     return this->elements.size();
 }
 
-// const vector<int> &MagicalContainer::getElements() const
-// {
+vector<int> &MagicalContainer::getElements()
+{
+    return this->elements;
+}
 
-// }
+void MagicalContainer::setElements(vector<int> new_elements)
+{
+    this->elements = move(new_elements);
+}
 
 // ------------------- Ascending Iterator -------------------
 
 MagicalContainer::AscendingIterator::AscendingIterator(MagicalContainer &container) : container(&container), currentIndex(0) {}
 
-MagicalContainer::AscendingIterator::AscendingIterator(AscendingIterator &other) {}
-
-MagicalContainer::AscendingIterator::~AscendingIterator() {}
+MagicalContainer::AscendingIterator::AscendingIterator(const AscendingIterator &other) : container(other.container), currentIndex(other.currentIndex) {}
 
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator=(const AscendingIterator &other)
 {
+    if (this->container != other.container)
+    {
+        throw runtime_error("The given iterator is in another location in memory!");
+    }
+
+    if (this != &other)
+    {
+        this->container = other.container;
+        this->currentIndex = other.currentIndex;
+    }
+
     return *this;
 }
 
 MagicalContainer::AscendingIterator &MagicalContainer::AscendingIterator::operator++()
 {
+    if (this->currentIndex >= this->container->size())
+    {
+        throw runtime_error("Out of bounds");
+    }
     ++currentIndex;
     return *this;
 }
 
 int MagicalContainer::AscendingIterator::operator*() const
 {
-    return this->container->elements[currentIndex];
+    return this->container->getElements()[currentIndex];
 }
 
 bool MagicalContainer::AscendingIterator::operator==(const AscendingIterator &other) const
 {
-    if (container == other.container)
-        return true;
-    else
-        return false;
+    return (this->container == other.container) && (currentIndex == other.currentIndex);
 }
 
 bool MagicalContainer::AscendingIterator::operator!=(const AscendingIterator &other) const
 {
-    if (container != other.container)
-        return true;
-    else
-        return false;
+    return !(*this == other);
 }
 
 bool MagicalContainer::AscendingIterator::operator<(const AscendingIterator &other) const
 {
-    return false;
+    return currentIndex < other.currentIndex;
 }
 
 bool MagicalContainer::AscendingIterator::operator>(const AscendingIterator &other) const
 {
-    return false;
+    return currentIndex > other.currentIndex;
 }
 
 MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::begin()
@@ -90,52 +107,81 @@ MagicalContainer::AscendingIterator MagicalContainer::AscendingIterator::end()
 
 // ------------------- SideCross Iterator -------------------
 
-MagicalContainer::SideCrossIterator::SideCrossIterator(MagicalContainer &container) : container(&container), currentIndex(0) {}
+MagicalContainer::SideCrossIterator::SideCrossIterator(MagicalContainer &container) : container(&container), currentIndex(0), isForward(true) {}
 
-MagicalContainer::SideCrossIterator::SideCrossIterator(SideCrossIterator &other) {}
-
-MagicalContainer::SideCrossIterator::~SideCrossIterator() {}
+MagicalContainer::SideCrossIterator::SideCrossIterator(SideCrossIterator &other) : container(other.container), currentIndex(other.currentIndex), isForward(other.isForward) {}
 
 MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operator=(const SideCrossIterator &other)
 {
+    if (this->container != other.container)
+    {
+        throw runtime_error("The given iterator is in another location in memory!");
+    }
+
+    if (this != &other)
+    {
+        this->container = other.container;
+        this->currentIndex = other.currentIndex;
+        this->isForward = other.isForward;
+    }
+
     return *this;
 }
 
 MagicalContainer::SideCrossIterator &MagicalContainer::SideCrossIterator::operator++()
 {
-    currentIndex++;
+    if (isForward)
+    {
+        if (currentIndex + 2 >= static_cast<size_t>(container->size()))
+        {
+            currentIndex = (currentIndex + 2) % static_cast<size_t>(container->size());
+            isForward = false;
+        }
+        else
+        {
+            currentIndex += 2;
+        }
+    }
+    else
+    {
+        if (currentIndex < 2)
+        {
+            currentIndex = (static_cast<size_t>(container->size()) - 1) - ((1 - currentIndex) % 2);
+            isForward = true;
+        }
+        else
+        {
+            currentIndex -= 2;
+        }
+    }
+    // currentIndex++;
     return *this;
 }
 
 int MagicalContainer::SideCrossIterator::operator*() const
 {
-    return this->container->elements[currentIndex];
+    return this->container->getElements()[currentIndex];
 }
 
 bool MagicalContainer::SideCrossIterator::operator==(const SideCrossIterator &other) const
 {
-    if (this->container == other.container)
-        return true;
-    else
-        return false;
+    return (this->container == other.container) && (currentIndex == other.currentIndex);
 }
 
 bool MagicalContainer::SideCrossIterator::operator!=(const SideCrossIterator &other) const
 {
-    if (this->container != other.container)
-        return true;
-    else
-        return false;
+    return !(*this == other);
+    // return currentIndex != other.currentIndex || isForward != other.isForward;
 }
 
 bool MagicalContainer::SideCrossIterator::operator<(const SideCrossIterator &other) const
 {
-    return false;
+    return currentIndex < other.currentIndex;
 }
 
 bool MagicalContainer::SideCrossIterator::operator>(const SideCrossIterator &other) const
 {
-    return false;
+    return currentIndex > other.currentIndex;
 }
 
 MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::begin()
@@ -153,19 +199,38 @@ MagicalContainer::SideCrossIterator MagicalContainer::SideCrossIterator::end()
 
 // ------------------- Prime Iterator -------------------
 
-MagicalContainer::PrimeIterator::PrimeIterator(MagicalContainer &container) : container(&container), currentIndex(0) {}
+MagicalContainer::PrimeIterator::PrimeIterator(MagicalContainer &container) : container(&container), currentIndex(0)
+{
+    while (currentIndex < this->container->size() && !(prime(this->container->getElements()[static_cast<vector<int>::size_type>(currentIndex)])))
+    {
+        currentIndex++;
+    }
+}
 
-MagicalContainer::PrimeIterator::PrimeIterator(PrimeIterator &other) {}
-
-MagicalContainer::PrimeIterator::~PrimeIterator() {}
+MagicalContainer::PrimeIterator::PrimeIterator(PrimeIterator &other) : container(other.container), currentIndex(other.currentIndex) {}
 
 MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator=(const PrimeIterator &other)
 {
+    if (this->container != other.container)
+    {
+        throw runtime_error("The given iterator is in another location in memory!");
+    }
+
+    if (this != &other)
+    {
+        this->container = other.container;
+        this->currentIndex = other.currentIndex;
+    }
+
     return *this;
 }
 
 MagicalContainer::PrimeIterator &MagicalContainer::PrimeIterator::operator++()
 {
+    if (this->currentIndex >= this->container->size())
+    {
+        throw runtime_error("Out of bounds");
+    }
     ++currentIndex;
     return *this;
 }
@@ -193,12 +258,18 @@ bool MagicalContainer::PrimeIterator::operator!=(const PrimeIterator &other) con
 
 bool MagicalContainer::PrimeIterator::operator<(const PrimeIterator &other) const
 {
-    return false;
+    if (this->currentIndex < other.currentIndex)
+        return true;
+    else
+        return false;
 }
 
 bool MagicalContainer::PrimeIterator::operator>(const PrimeIterator &other) const
 {
-    return false;
+    if (this->currentIndex > other.currentIndex)
+        return true;
+    else
+        return false;
 }
 
 MagicalContainer::PrimeIterator MagicalContainer::PrimeIterator::begin()
@@ -212,4 +283,14 @@ MagicalContainer::PrimeIterator MagicalContainer::PrimeIterator::end()
     // point to the end of the container
     currentIndex = this->container->elements.size();
     return iter;
+}
+
+bool MagicalContainer::PrimeIterator::prime(int number)
+{
+    if (number <= 1)
+        return false;
+    for (int i = 2; i < number; i++)
+        if (number % i == 0)
+            return false;
+    return true;
 }

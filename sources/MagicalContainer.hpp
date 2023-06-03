@@ -41,7 +41,13 @@ namespace ariel
         /**
          * @return The elements of the container
          */
-        // const vector<int> &getElements() const;
+        vector<int> &getElements();
+
+        /**
+         * @brief Setting new elements of the container
+         * @param new_elements the new elements to set in the container
+         */
+        void setElements(vector<int> new_elements);
 
         class AscendingIterator
         {
@@ -58,12 +64,12 @@ namespace ariel
             /**
              * @brief Copy constructor
              */
-            AscendingIterator(AscendingIterator &other);
+            AscendingIterator(const AscendingIterator &other);
 
             /**
              * @brief Destructor
              */
-            ~AscendingIterator();
+            ~AscendingIterator() = default;
 
             /**
              * @brief Assignment operator
@@ -120,6 +126,7 @@ namespace ariel
         private:
             MagicalContainer *container;
             size_t currentIndex;
+            bool isForward;
 
         public:
             /**
@@ -135,7 +142,7 @@ namespace ariel
             /**
              * @brief Destructor
              */
-            ~SideCrossIterator();
+            ~SideCrossIterator() = default;
 
             /**
              * @brief Assignment operator
@@ -207,7 +214,7 @@ namespace ariel
             /**
              * @brief Destructor
              */
-            ~PrimeIterator();
+            ~PrimeIterator() = default;
 
             /**
              * @brief Assignment operator
@@ -257,6 +264,13 @@ namespace ariel
              * of the container based on the specified type
              */
             PrimeIterator end();
+
+            /**
+             * @brief Function to check if the number is prime
+             * @return true if the given number is prime, otherwise false
+             * @param number the given number to check
+             */
+            bool static prime(int number);
         };
     };
 
