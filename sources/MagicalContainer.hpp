@@ -36,7 +36,7 @@ namespace ariel
          * @brief Returning the size of the container
          * @return the size of the container
          */
-        int size();
+        size_t size();
 
         /**
          * @return The elements of the container
