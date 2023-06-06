@@ -12,264 +12,85 @@ namespace ariel
     class MagicalContainer
     {
     private:
-        vector<int> elements;
+        vector<int> elements; // vector of elements
 
     public:
-        /**
-         * @brief Default constructor
-         */
         MagicalContainer();
-
-        /**
-         * @brief Adding element to the container
-         * @param element the mistic element to add
-         */
         void addElement(int element);
-
-        /**
-         * @brief Removing element from the container
-         * @param element the mistic element to remove
-         */
         void removeElement(int element);
-
-        /**
-         * @brief Returning the size of the container
-         * @return the size of the container
-         */
         size_t size();
-
-        /**
-         * @return The elements of the container
-         */
         vector<int> &getElements();
-
-        /**
-         * @brief Setting new elements of the container
-         * @param new_elements the new elements to set in the container
-         */
         void setElements(vector<int> new_elements);
 
         class AscendingIterator
         {
         private:
-            MagicalContainer *container;
-            size_t currentIndex;
+            MagicalContainer *container; // pointer to MagicalContainer
+            size_t currentIndex;         // current index
 
         public:
-            /**
-             * @brief Default constructor
-             */
             AscendingIterator(MagicalContainer &container);
-
-            /**
-             * @brief Copy constructor
-             */
             AscendingIterator(const AscendingIterator &other);
-
-            /**
-             * @brief Destructor
-             */
+            AscendingIterator(AscendingIterator &&other) = default; // Move constructor
             ~AscendingIterator() = default;
-
-            /**
-             * @brief Assignment operator
-             */
             AscendingIterator &operator=(const AscendingIterator &other);
-
-            /**
-             * @brief Pre-increment operator
-             */
+            AscendingIterator &operator=(AscendingIterator &&other) = default; // Move assignment operator
             AscendingIterator &operator++();
-
-            /**
-             * @brief Dereference operator
-             */
             int operator*() const;
-
-            /**
-             * @brief Equality comparison operator
-             */
             bool operator==(const AscendingIterator &other) const;
-
-            /**
-             * @brief Inequality comparison operator
-             */
             bool operator!=(const AscendingIterator &other) const;
-
-            /**
-             * @brief Small comparison operator
-             */
             bool operator<(const AscendingIterator &other) const;
-
-            /**
-             * @brief Great comparison operator
-             */
             bool operator>(const AscendingIterator &other) const;
-
-            /**
-             * @brief Returns the appropriate iterator pointing
-             * to the first element of the container
-             * based on the specified type
-             */
             AscendingIterator begin();
-
-            /**
-             * @brief Returns the appropriate iterator pointing
-             * to the one position past the last element
-             * of the container based on the specified type
-             */
             AscendingIterator end();
         };
 
         class SideCrossIterator
         {
         private:
-            MagicalContainer *container;
-            size_t currentIndex;
-            bool isForward;
+            MagicalContainer *container; // pointer to MagicalContainer
+            bool isForward;              // true if forward, false if backward
+            size_t low, high;            // low and high indexes
 
         public:
-            /**
-             * @brief Default constructor
-             */
             SideCrossIterator(MagicalContainer &container);
-
-            /**
-             * @brief Copy constructor
-             */
             SideCrossIterator(SideCrossIterator &other);
-
-            /**
-             * @brief Destructor
-             */
+            SideCrossIterator(SideCrossIterator &&other) = default; // Move constructor
             ~SideCrossIterator() = default;
-
-            /**
-             * @brief Assignment operator
-             */
             SideCrossIterator &operator=(const SideCrossIterator &other);
-
-            /**
-             * @brief Pre-increment operator
-             */
+            SideCrossIterator &operator=(SideCrossIterator &&other) = default; // Move assignment operator
             SideCrossIterator &operator++();
-
-            /**
-             * @brief Dereference operator
-             */
             int operator*() const;
-
-            /**
-             * @brief Equality comparison operator
-             */
             bool operator==(const SideCrossIterator &other) const;
-
-            /**
-             * @brief Inequality comparison operator
-             */
             bool operator!=(const SideCrossIterator &other) const;
-
-            /**
-             * @brief Small comparison operator
-             */
             bool operator<(const SideCrossIterator &other) const;
-
-            /**
-             * @brief Great comparison operator
-             */
             bool operator>(const SideCrossIterator &other) const;
-
-            /**
-             * @brief Returns the appropriate iterator pointing
-             * to the first element of the container
-             * based on the specified type
-             */
             SideCrossIterator begin();
-
-            /**
-             * @brief Returns the appropriate iterator pointing
-             * to the one position past the last element
-             * of the container based on the specified type
-             */
             SideCrossIterator end();
         };
 
         class PrimeIterator
         {
         private:
-            MagicalContainer *container;
-            size_t currentIndex;
+            MagicalContainer *container; // pointer to MagicalContainer
+            size_t currentIndex;         // current index
 
         public:
-            /**
-             * @brief Default constructor
-             */
             PrimeIterator(MagicalContainer &container);
-
-            /**
-             * @brief Copy constructor
-             */
             PrimeIterator(PrimeIterator &other);
-
-            /**
-             * @brief Destructor
-             */
+            PrimeIterator(PrimeIterator &&other) = default; // Move constructor
             ~PrimeIterator() = default;
-
-            /**
-             * @brief Assignment operator
-             */
             PrimeIterator &operator=(const PrimeIterator &other);
-
-            /**
-             * @brief Pre-increment operator
-             */
+            PrimeIterator &operator=(PrimeIterator &&other) = default; // Move assignment operator
             PrimeIterator &operator++();
-
-            /**
-             * @brief Dereference operator
-             */
             int operator*() const;
-
-            /**
-             * @brief Equality comparison operator
-             */
             bool operator==(const PrimeIterator &other) const;
-
-            /**
-             * @brief Inequality comparison operator
-             */
             bool operator!=(const PrimeIterator &other) const;
-
-            /**
-             * @brief Small comparison operator
-             */
             bool operator<(const PrimeIterator &other) const;
-
-            /**
-             * @brief Great comparison operator
-             */
             bool operator>(const PrimeIterator &other) const;
-
-            /**
-             * @brief Returns the appropriate iterator pointing
-             * to the first element of the container
-             * based on the specified type
-             */
             PrimeIterator begin();
-
-            /**
-             * @brief Returns the appropriate iterator pointing
-             * to the one position past the last element
-             * of the container based on the specified type
-             */
             PrimeIterator end();
-
-            /**
-             * @brief Function to check if the number is prime
-             * @return true if the given number is prime, otherwise false
-             * @param number the given number to check
-             */
+            size_t findNextPrime(size_t index) const;
             bool static prime(int number);
         };
     };
